@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 BACKUP=$(date +%F_%H-%M-%S).tar.gz
-tar zcvf "backups/$BACKUP" memory/*
-cp -r memory/* disk/
+echo "tarring"
+time tar zcf "backups/$BACKUP" memory/*
+echo "copying"
+time cp -r memory/* disk/
