@@ -1,0 +1,12 @@
+  name: Othercraft
+  main: org.othercraft.OthercraftPlugin
+  version: 1.14.3
+  commands:
+    oc-status:
+      description: othercraft status commands
+      usage: /oc-status
+      permission: minecraft.command.op
+    backup:
+      description: backs up the server
+      usage: /backup
+      permission: minecraft.command.op
