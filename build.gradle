@@ -41,6 +41,12 @@ compileTestKotlin {
 task dep(type: Copy,dependsOn: shadowJar) {
     from file("build/libs")
     include "*.jar"
-    into file("othercraft/memory/plugins")
+    if ( new File("othercraft").exists() ){
+        into file("othercraft/memory/plugins")
+    } else if (new File("../").name == "othercraft"){
+        into file("../memory/plugins")
+    } else  {
+        throw new RuntimeException("can't find othercraft directory")
+    }
 }
 
