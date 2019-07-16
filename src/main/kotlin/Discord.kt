@@ -7,6 +7,22 @@ import discord4j.core.`object`.util.Snowflake
 import reactor.core.publisher.Mono
 import java.io.File
 
+private object Store {
+    val isDebug = File("DEBUG").exists()
+
+
+    val logChannel: Snowflake = when {
+        isDebug -> "600755369110667294"
+        else -> "600120188309864448"
+    }.let { Snowflake.of(it) }
+
+    val statusChannel: Snowflake = when {
+        isDebug -> "600755754743496819"
+        else -> "600320275904724995"
+    }.let { Snowflake.of(it) }
+
+}
+
 class Discord {
 
     private val key = listOf("key.txt", "/srv/mc/othercraft/key.txt")
@@ -16,14 +32,14 @@ class Discord {
 
     val logChannel: Mono<GuildMessageChannel> by lazy {
         client
-            .getChannelById(Snowflake.of("600120188309864448"))
+            .getChannelById(Store.logChannel)
             .cast(GuildMessageChannel::class.java)
             .cache()
     }
 
     val statusChannel: Mono<GuildMessageChannel> by lazy {
         client
-            .getChannelById(Snowflake.of("600320275904724995"))
+            .getChannelById(Store.statusChannel)
             .cast(GuildMessageChannel::class.java)
             .cache()
     }

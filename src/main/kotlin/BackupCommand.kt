@@ -6,7 +6,11 @@ import org.bukkit.command.CommandSender
 
 class BackupCommand(private val plugin: OthercraftPlugin) : CommandExecutor  {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        plugin.backup()
+        val success = plugin.backup()
+        if (!success){
+            sender send "Already backing up"
+            return false
+        }
         return true
     }
 
