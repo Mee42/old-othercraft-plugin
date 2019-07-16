@@ -44,7 +44,6 @@ class OthercraftPlugin : JavaPlugin() {
     }
 
     override fun onDisable() {
-        backup()
         println("## D4J logging out")
         discord.logChannel
             .flatMap { c -> c.createMessage("Server stopped") }
