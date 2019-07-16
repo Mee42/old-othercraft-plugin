@@ -1,7 +1,5 @@
 .gradle
 .idea
 build
-othercraft/disk
-othercraft/memory
-othercraft/backups
+othercraft/
 spigot
