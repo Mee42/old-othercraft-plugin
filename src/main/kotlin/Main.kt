@@ -12,9 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 import java.util.Calendar
 import java.io.File
-
-
-
+import kotlin.concurrent.thread
 
 
 class OthercraftPlugin : JavaPlugin() {
@@ -57,20 +55,22 @@ class OthercraftPlugin : JavaPlugin() {
 
 
     fun backup(){
-        this.server.spigot().broadcast(TextComponent("Backing up..."))
-        discord.log("Backing up")
-        val backups = File("../backups")
-            .listFiles()
-            ?.size ?: -1
-        val pb = ProcessBuilder("backup.sh")
-        pb.inheritIO()
-        pb.directory(File("../"))
-        pb.start().waitFor()
-        val new = File("../backups")
-            .listFiles()
-            ?.size ?: -1
-        discord.log("Backed up. Initial: $backups now: $new delta: ${new - backups}")
-        this.server.spigot().broadcast(TextComponent("Done!"))
+        thread {
+            this.server.spigot().broadcast(TextComponent("Backing up..."))
+            discord.log("Backing up")
+            val backups = File("../backups")
+                .listFiles()
+                ?.size ?: -1
+            val pb = ProcessBuilder("backup.sh")
+            pb.inheritIO()
+            pb.directory(File("../"))
+            pb.start().waitFor()
+            val new = File("../backups")
+                .listFiles()
+                ?.size ?: -1
+            discord.log("Backed up. Initial: $backups now: $new delta: ${new - backups}")
+            this.server.spigot().broadcast(TextComponent("Done!"))
+        }
     }
 }
 
