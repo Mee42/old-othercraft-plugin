@@ -168,7 +168,6 @@ class OthercraftPlugin : JavaPlugin() {
             .flatMap { channel ->
                 channel
                     .getMessagesBefore(Snowflake.of(Instant.now()))
-                    .map { println("GOT MESSAGE");it }
                     .next()
             }
             .flatMap { it.edit { w -> w.setEmbed { u -> spec(u) } } }
