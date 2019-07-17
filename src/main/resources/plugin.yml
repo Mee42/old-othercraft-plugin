@@ -10,3 +10,7 @@
       description: backs up the server
       usage: /backup
       permission: minecraft.command.op
+    sped:
+      description: gotta go fast
+      usage: /sped
+

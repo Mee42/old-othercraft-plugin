@@ -2,13 +2,10 @@ package org.othercraft
 
 import discord4j.core.`object`.util.Snowflake
 import discord4j.core.spec.EmbedCreateSpec
-import discord4j.rest.http.client.ClientException
 import net.md_5.bungee.api.chat.TextComponent
-import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.World
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -19,16 +16,13 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.weather.WeatherChangeEvent
 import org.bukkit.plugin.java.JavaPlugin
 import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
 import reactor.core.publisher.switchIfEmpty
 import java.awt.Color
 import java.io.File
-import java.lang.reflect.InvocationTargetException
 import java.time.Duration
 import java.time.Instant
 import java.util.*
 import kotlin.concurrent.thread
-import kotlin.math.roundToInt
 
 
 class OthercraftPlugin : JavaPlugin() {
@@ -40,6 +34,8 @@ class OthercraftPlugin : JavaPlugin() {
         discord = Discord()
         getCommand("oc-status")?.setExecutor(StatusCommand()) ?: logger.severe("Error adding commands")
         getCommand("backup")?.setExecutor(BackupCommand(this)) ?: logger.severe("Error adding commands")
+        getCommand("sped")?.setExecutor(SpedCommand()) ?: logger.severe("Error adding commands")
+
 
 
         server.pluginManager.registerEvents(MyListener(this), this)
@@ -156,6 +152,7 @@ class OthercraftPlugin : JavaPlugin() {
                 s.append("**")
                 s.append(p.playerListName)
                 s.append("**")
+                s.append('\n')
             }
 
 
@@ -247,5 +244,9 @@ class MyListener(private val plugin: OthercraftPlugin) : Listener {
         plugin.updateBoard()
         event.toWeatherState()
     }
+
+
+
+
 
 }
