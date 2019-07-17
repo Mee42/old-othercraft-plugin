@@ -135,6 +135,7 @@ class OthercraftPlugin : JavaPlugin() {
             if (lastBackedUp != null) {
                 spec.setTimestamp(lastBackedUp ?: error("lastBackedUp set to null after being non-null"))
                     .setFooter("Last backup was at ", null)
+                spec.addField("Uptime",Duration.between(Instant.now(),start).toString(),false)
             } else {
                 spec.setTimestamp(start)
                     .setFooter("Started at ", null)
@@ -158,6 +159,7 @@ class OthercraftPlugin : JavaPlugin() {
             } else {
                 spec.setColor(Color.YELLOW)
             }
+
         }
 
         updateBoard(spec)
