@@ -175,7 +175,7 @@ class OthercraftPlugin : JavaPlugin() {
             .switchIfEmpty {
                 discord.statusChannel.flatMap { channel -> channel.createEmbed { u -> spec(u) } }
             }
-            .onErrorMap { it.printStackTrace() }
+            .onErrorMap { it.printStackTrace();it }
             .subscribe()
     }
 
