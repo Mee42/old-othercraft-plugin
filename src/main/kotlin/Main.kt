@@ -166,10 +166,10 @@ class OthercraftPlugin : JavaPlugin() {
     private fun updateBoard(spec: (EmbedCreateSpec) -> Any) {
         discord.statusChannel
             .flatMap { channel -> channel.getMessagesBefore(Snowflake.of(Instant.now())).next() }
-             .flatMap { it.edit { w -> w.setEmbed { u -> spec(u) } } }
-            .switchIfEmpty {
-                discord.statusChannel.flatMap { channel -> channel.createEmbed { u -> spec(u) } }
-            }
+            .flatMap { it.edit { w -> w.setEmbed { u -> spec(u) } } }
+//            .switchIfEmpty {
+//                discord.statusChannel.flatMap { channel -> channel.createEmbed { u -> spec(u) } }
+//            }
             .subscribe()
     }
 
