@@ -18,7 +18,7 @@ private object Store {
 
     val statusChannel: Snowflake = when {
         isDebug -> "600755754743496819"
-        else -> "600320275904724995"
+        else -> "600841390439661639"
     }.let { Snowflake.of(it) }
 
 }
