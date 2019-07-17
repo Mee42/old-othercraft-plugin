@@ -6,6 +6,7 @@ import discord4j.rest.http.client.ClientException
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
+import org.bukkit.World
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -15,6 +16,7 @@ import org.bukkit.event.player.PlayerGameModeChangeEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerKickEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.weather.WeatherChangeEvent
 import org.bukkit.plugin.java.JavaPlugin
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -141,7 +143,11 @@ class OthercraftPlugin : JavaPlugin() {
                     .setFooter("Started at ", null)
             }
 
-
+            spec.setDescription(
+                "**Weather**:" + this.server.getWorld("world")?.weather() + "\n" +
+                        if (isDay("world")) "Day \uD83C\uDF1E🌞🌞" else "Night \uD83C\uDF19"
+            )
+        spec.addField("Weather",this.server.getWorld("world")?.weather() ?: "unknown",false)
 
             val s = StringBuffer()
             for (p in this.server.onlinePlayers) {
@@ -165,6 +171,12 @@ class OthercraftPlugin : JavaPlugin() {
         updateBoard(spec)
     }
 
+    fun isDay(worldname: String): Boolean {
+        val time = server.getWorld(worldname)!!.time
+        return time < 12300 || time > 23850
+
+    }
+
     private fun updateBoard(spec: (EmbedCreateSpec) -> Any) {
         discord.statusChannel
             .flatMap { channel ->
@@ -180,6 +192,14 @@ class OthercraftPlugin : JavaPlugin() {
             .subscribe()
     }
 
+}
+
+private fun World.weather(): String {
+    return when {
+        this.hasStorm() && this.isThundering -> "Thundering"
+        this.hasStorm() -> "Raining"
+        else -> "Sunny"
+    }
 }
 
 
@@ -220,6 +240,12 @@ class MyListener(private val plugin: OthercraftPlugin) : Listener {
     fun f(event: PlayerGameModeChangeEvent) {
         plugin.updateBoard()
         event.player
+    }
+
+    @EventHandler
+    fun f(event: WeatherChangeEvent) {
+        plugin.updateBoard()
+        event.toWeatherState()
     }
 
 }
