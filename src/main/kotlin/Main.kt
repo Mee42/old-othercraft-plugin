@@ -21,6 +21,7 @@ import java.awt.Color
 import java.io.File
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.concurrent.thread
 
@@ -43,7 +44,11 @@ class OthercraftPlugin : JavaPlugin() {
         val timer = Timer()
         val hourlyTask = object : TimerTask() {
             override fun run() {
-                backup()
+                if (LocalDateTime.now().hour % 6 == 0 ){
+                    backup()
+                } else {
+                    copy()
+                }
             }
         }
 
@@ -58,6 +63,7 @@ class OthercraftPlugin : JavaPlugin() {
 
         Flux.interval(Duration.ofMinutes(1))
             .subscribe { updateBoard() }
+
         discord.log("Server Started")
         updateBoard()
     }
@@ -90,6 +96,21 @@ class OthercraftPlugin : JavaPlugin() {
 
     @Volatile
     private var backingUp = false
+
+
+    fun copy() {
+        if (backingUp)
+            return
+        backingUp = true
+        thread {
+            discord.log("Copying")
+            val pb = ProcessBuilder("copy.sh")
+            pb.inheritIO()
+            pb.directory(File("../"))
+            pb.start().waitFor()
+            backingUp = false
+        }
+    }
 
     fun backup(): Boolean {
         if (backingUp)
