@@ -189,7 +189,7 @@ class OthercraftPlugin : JavaPlugin() {
         updateBoard(spec)
     }
 
-    fun isDay(worldname: String): Boolean {
+    private fun isDay(worldname: String): Boolean {
         val time = server.getWorld(worldname)!!.time
         return time < 12300 || time > 23850
 
@@ -225,16 +225,22 @@ infix fun CommandSender.send(text: String) {
     spigot().sendMessage(TextComponent(text))
 }
 
+const val TIME = "TIME"
 
 class MyListener(private val plugin: OthercraftPlugin) : Listener {
 
     private val d = plugin.discord
+
+    private val map = mutableMapOf<String,Instant>()
+
+
 
     @EventHandler
     fun f(event: PlayerJoinEvent) {
         event.joinMessage = "§6Welcome to Othercraft, " + event.player.name + "!"
         d.log(event.player.name + " logged in")
         plugin.updateBoard()
+        map[event.player.uniqueId.toString()] = Instant.now()
     }
 
     @EventHandler
@@ -246,6 +252,9 @@ class MyListener(private val plugin: OthercraftPlugin) : Listener {
     fun f(event: PlayerQuitEvent) {
         d.log(event.player.name + " left")
         plugin.updateBoard()
+        val duration = Duration.between(map[event.player.uniqueId.toString()] ?: Instant.now(),Instant.now())
+        map.remove(event.player.uniqueId.toString())
+        d.log(TIME + ":" + event.player.uniqueId.toString() + ":" + duration.toMillis())
     }
 
     @EventHandler
