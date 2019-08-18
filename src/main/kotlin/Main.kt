@@ -41,25 +41,6 @@ class OthercraftPlugin : JavaPlugin() {
 
         server.pluginManager.registerEvents(MyListener(this), this)
         discord.login()
-        val timer = Timer()
-        val hourlyTask = object : TimerTask() {
-            override fun run() {
-                if (LocalDateTime.now().hour % 6 == 0 ){
-                    backup()
-                } else {
-                    copy()
-                }
-            }
-        }
-
-        val c = Calendar.getInstance()
-        c.add(Calendar.HOUR_OF_DAY, 1)
-        c.set(Calendar.MINUTE, 0)
-        c.set(Calendar.SECOND, 0)
-        c.set(Calendar.MILLISECOND, 0)
-        val msTillHour = c.timeInMillis - System.currentTimeMillis()
-        logger.info("MS till hour: $msTillHour")
-        timer.schedule(hourlyTask, msTillHour, 1000 * 60 * 60)
 
         Flux.interval(Duration.ofMinutes(1))
             .subscribe { updateBoard() }
@@ -94,51 +75,7 @@ class OthercraftPlugin : JavaPlugin() {
     }
 
 
-    @Volatile
-    private var backingUp = false
 
-
-    fun copy() {
-        if (backingUp)
-            return
-        backingUp = true
-        thread {
-            discord.log("Copying")
-            val pb = ProcessBuilder("copy.sh")
-            pb.inheritIO()
-            pb.directory(File("../"))
-            pb.start().waitFor()
-            backingUp = false
-        }
-    }
-
-    fun backup(): Boolean {
-        if (backingUp)
-            return false
-        backingUp = true
-        thread {
-            this.server.spigot().broadcast(TextComponent("Backing up..."))
-            discord.log("Backing up")
-            val backups = File("../backups")
-                .listFiles()
-                ?.size ?: -1
-            val pb = ProcessBuilder("backup.sh")
-            pb.inheritIO()
-            pb.directory(File("../"))
-            pb.start().waitFor()
-            val new = File("../backups")
-                .listFiles()
-                ?.size ?: -1
-            discord.log("Backed up. Initial: $backups now: $new delta: ${new - backups}")
-            this.server.spigot().broadcast(TextComponent("Done!"))
-            lastBackedUp = Instant.now()
-            updateBoard()
-            backingUp = false
-        }
-        return true
-    }
-
-    private var lastBackedUp: Instant? = null
     private val start: Instant = Instant.now()
 
 
@@ -151,20 +88,16 @@ class OthercraftPlugin : JavaPlugin() {
                 .setUrl("https://othercraft.org")
 
 
-            if (lastBackedUp != null) {
-                spec.setTimestamp(lastBackedUp ?: error("lastBackedUp set to null after being non-null"))
-                    .setFooter("Last backup was at ", null)
-                spec.addField("Uptime",Duration.between(Instant.now(),start).toString(),false)
-            } else {
-                spec.setTimestamp(start)
-                    .setFooter("Started at ", null)
-            }
+            spec.addField("Uptime",Duration.between(Instant.now(),start).toString(),false)
+
+            spec.setTimestamp(start)
+                .setFooter("Started at ", null)
 
             spec.setDescription(
                 "**Weather**:" + this.server.getWorld("world")?.weather() + "\n" +
                         if (isDay("world")) "Day \uD83C\uDF1E🌞🌞" else "Night \uD83C\uDF19"
             )
-        spec.addField("Weather",this.server.getWorld("world")?.weather() ?: "unknown",false)
+
 
             val s = StringBuffer()
             for (p in this.server.onlinePlayers) {
