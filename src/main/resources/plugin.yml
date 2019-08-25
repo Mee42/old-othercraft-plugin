@@ -13,4 +13,7 @@
     sped:
       description: gotta go fast
       usage: /sped
-
+    openinv:
+      description: open someone else's inventory
+      usage: /openinv
+      permission: minecraft.command.op

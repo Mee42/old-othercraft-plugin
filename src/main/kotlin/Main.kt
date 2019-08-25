@@ -37,7 +37,7 @@ class OthercraftPlugin : JavaPlugin() {
         getCommand("backup")?.setExecutor(BackupCommand(this)) ?: logger.severe("Error adding commands")
         getCommand("sped")?.setExecutor(SpedCommand()) ?: logger.severe("Error adding commands")
 
-
+        getCommand("openinv")?.setExecutor(OpenInvCommand()) ?: logger.severe("Error adding commands")
 
         server.pluginManager.registerEvents(MyListener(this), this)
         discord.login()
