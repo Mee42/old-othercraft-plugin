@@ -1,0 +1,126 @@
+name: OpenPlayerInventory
+main: blackdesert13.plugins.OpenPlayerInventory
+version: 1.5.0
+commands:
+   opi:
+      description: This opens a players inventory.
+      usage: /<command> [player]
+      permission: openplayerinventory.opi
+      permission-message: You don't have <permission> to do that!
+   clearpotion:
+      description: This clears a players potion effects.
+      usage: /<command> [player]
+      permission: openplayerinventory.clearpotion
+      permission-message: You don't have <permission> to do that!
+   opa:
+      description: This opens a players armor as an inventory.
+      usage: /<command> [player]
+      permission: openplayerinventory.opa
+      permission-message: You don't have <permission> to do that!
+   mightyinvis:
+      description: This makes you invisible with special effects, armor will be replaced.
+      usage: /<command>
+      permission: openplayerinventory.mightyinvis
+      permission-message: You don't have <permission> to do that!
+   binvis:
+      description: This makes you invisible, not the armor.
+      usage: /<command>
+      permission: openplayerinventory.binvis
+      permission-message: You don't have <permission> to do that!
+   mightyvis:
+      description: This makes you visible again with overpowered special effects.
+      usage: /<command>
+      permission: openplayerinventory.mightyvis
+      permission-message: You don't have <permission> to do that!
+   bvis:
+      description: This makes you visible again.
+      usage: /<command>
+      permission: openplayerinventory.bvis
+      permission-message: You don't have <permission> to do that!
+   magictrap:
+      description: This traps a player with magic.
+      usage: /<command> [player]
+      permission: openplayerinventory.magictrap
+      permission-message: You don't have <permission> to do that!
+   magicrelease:
+      description: This releases the trapped player from the magic.
+      usage: /<command> [player]
+      permission: openplayerinventory.magicrelease
+      permission-message: You don't have <permission> to do that!
+   magiclist:
+      description: This lists all players trapped by magic.
+      usage: /<command>
+      permission: openplayerinventory.magicrelease
+      permission-message: You don't have <permission> to do that!
+   ppi:
+      description: This pastes your inventory to a targeted players inventory.
+      usage: /<command> [player]
+      permission: openplayerinventory.ppi
+      permission-message: You don't have <permission> to do that!
+   cpi:
+      description: This copies a targeted players inventory to your inventory.
+      usage: /<command> [player]
+      permission: openplayerinventory.cpi
+      permission-message: You don't have <permission> to do that!
+   opec:
+      description: This opens a players enderchest.
+      usage: /<command> [player]
+      permission: openplayerinventory.opec
+      permission-message: You don't have <permission> to do that!
+
+permissions:
+   openplayerinventory.*:
+      description: Grants you all rights of using openplayerinventory.
+      children:
+         openplayerinventory.opi: true
+         openplayerinventory.mightyinvis: true
+         openplayerinventory.binvis: true
+         openplayerinventory.mightyvis: true
+         openplayerinventory.bvis: true
+         openplayerinventory.magictrap: true
+         openplayerinventory.magicrelease: true
+         openplayerinventory.magiclist: true
+         openplayerinventory.cpi: true
+         openplayerinventory.ppi: true
+         openplayerinventory.opec: true
+         openplayerinventory.opa: true
+         openplayerinventory.clearpotion: true
+   openplayerinventory.opi:
+      description: You can open a players inventory.
+      default: op
+   openplayerinventory.clearpotion:
+      description: You can clear a players potion effects.
+      default: op
+   openplayerinventory.opa:
+      description: You can open a players armor as an inventory.
+      default: op
+   openplayerinventory.mightyinvis:
+      description: You can make you invisible with overpowered special effects.
+      default: op
+   openplayerinventory.binvis:
+      description: You can make you invisible.
+      default: op
+   openplayerinventory.mightyvis:
+      description: You can make you visible again with special effects.
+      default: op
+   openplayerinventory.bvis:
+      description: You can make you visible again.
+      default: op
+   openplayerinventory.magictrap:
+      description: You can trap a player with magic.
+      default: op
+   openplayerinventory.magicrelease:
+      description: You can release a player, who is trapped by magic.
+      default: op
+   openplayerinventory.magiclist:
+      description: You can show a list of players, who are trapped by magic.
+      default: op
+   openplayerinventory.cpi:
+      description: You can copy a players inventory to your inventory.
+      default: op
+   openplayerinventory.ppi:
+      description: You can paste your inventory to a players inventory.
+      default: op
+   openplayerinventory.opec:
+      description: You can open a players enderchest.
+      default: op
