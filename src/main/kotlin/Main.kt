@@ -1,6 +1,8 @@
 package org.othercraft
 
+import discord4j.core.`object`.reaction.ReactionEmoji
 import discord4j.core.`object`.util.Snowflake
+import discord4j.core.event.domain.message.MessageCreateEvent
 import discord4j.core.spec.EmbedCreateSpec
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.GameMode
@@ -44,8 +46,14 @@ class OthercraftPlugin : JavaPlugin() {
 
         Flux.interval(Duration.ofMinutes(1))
             .subscribe { updateBoard() }
-
         discord.log("Server Started")
+
+        discord.client.eventDispatcher.on(MessageCreateEvent::class.java)
+            .filter { it.message.content.map { st -> st.contains("egg") }.orElse(false) }
+            .flatMap { it.message.addReaction(ReactionEmoji.unicode("\uD83E\uDD5A")) }
+            .onErrorContinue { _, _ ->  }
+            .subscribe()
+
         updateBoard()
     }
 
