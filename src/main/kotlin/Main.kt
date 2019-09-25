@@ -20,13 +20,23 @@ import org.bukkit.plugin.java.JavaPlugin
 import reactor.core.publisher.Flux
 import reactor.core.publisher.switchIfEmpty
 import java.awt.Color
-import java.io.File
 import java.time.Duration
 import java.time.Instant
-import java.time.LocalDateTime
-import java.util.*
-import kotlin.concurrent.thread
 
+
+enum class Joke(
+    val matches: List<String>,
+    val emoji: ReactionEmoji,
+    val conditional: (MessageCreateEvent) -> Boolean = { true }){
+    EGG(listOf("egg"),ReactionEmoji.unicode("\uD83E\uDD5A")),
+
+    OC(listOf("oc","othercraft"),ReactionEmoji.custom(Snowflake.of("626209658981449731"),"oc",false),{
+        it.message.channelId == Snowflake.of("513794575043657728")
+    });
+
+
+
+}
 
 class OthercraftPlugin : JavaPlugin() {
 
@@ -49,8 +59,12 @@ class OthercraftPlugin : JavaPlugin() {
         discord.log("Server Started")
 
         discord.client.eventDispatcher.on(MessageCreateEvent::class.java)
-            .filter { it.message.content.map { st -> st.contains("egg") }.orElse(false) }
-            .flatMap { it.message.addReaction(ReactionEmoji.unicode("\uD83E\uDD5A")) }
+            .concatMapIterable { Joke.values().map { w -> w to it } }
+            .filter {
+                it.second.message.content.map { content ->
+                it.first.matches.any { str ->  content.contains(str,ignoreCase = true)}
+            }.orElse(false) }
+            .flatMap { it.second.message.addReaction(it.first.emoji) }
             .onErrorContinue { _, _ ->  }
             .subscribe()
 
