@@ -29,12 +29,9 @@ enum class Joke(
     val emoji: ReactionEmoji,
     val conditional: (MessageCreateEvent) -> Boolean = { true }){
     EGG(listOf("egg"),ReactionEmoji.unicode("\uD83E\uDD5A")),
-
     OC(listOf("oc","othercraft"),ReactionEmoji.custom(Snowflake.of("626209658981449731"),"oc",false),{
         it.message.channelId == Snowflake.of("513794575043657728")
     });
-
-
 
 }
 
@@ -64,6 +61,7 @@ class OthercraftPlugin : JavaPlugin() {
                 it.second.message.content.map { content ->
                 it.first.matches.any { str ->  content.contains(str,ignoreCase = true)}
             }.orElse(false) }
+            .filter { it.first.conditional.invoke(it.second) }
             .flatMap { it.second.message.addReaction(it.first.emoji) }
             .onErrorContinue { _, _ ->  }
             .subscribe()
