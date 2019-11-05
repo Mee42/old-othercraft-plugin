@@ -28,6 +28,8 @@ dependencies {
     implementation 'com.discord4j:discord4j-core:3.0.7'
     compile "io.projectreactor:reactor-core:3.2.10.RELEASE"
     compile group: 'io.netty', name: 'netty-all', version: '4.1.37.Final'
+
+    compile files("Dynmap-3.0-beta-5-spigot.jar")
 }
 
 compileKotlin {

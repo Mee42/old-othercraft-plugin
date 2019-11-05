@@ -5,9 +5,11 @@ import discord4j.core.`object`.util.Snowflake
 import discord4j.core.event.domain.message.MessageCreateEvent
 import discord4j.core.spec.EmbedCreateSpec
 import net.md_5.bungee.api.chat.TextComponent
+import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.World
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -17,6 +19,7 @@ import org.bukkit.event.player.PlayerKickEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.weather.WeatherChangeEvent
 import org.bukkit.plugin.java.JavaPlugin
+import org.dynmap.DynmapAPI
 import reactor.core.publisher.Flux
 import reactor.core.publisher.switchIfEmpty
 import java.awt.Color
@@ -38,6 +41,7 @@ enum class Joke(
 class OthercraftPlugin : JavaPlugin() {
 
     lateinit var discord: Discord
+    lateinit var dynmap: DynmapAPI
 
     override fun onEnable() {
         println("## onEnable")
@@ -67,6 +71,31 @@ class OthercraftPlugin : JavaPlugin() {
             .subscribe()
 
         updateBoard()
+
+
+        val dynmap = Bukkit.getPluginManager().getPlugin("dynmap")
+        if (dynmap != null && dynmap is DynmapAPI) {
+            this.dynmap = dynmap
+            Bukkit.getPluginManager().registerEvents(MyDynmap(this), this)
+            val var3 = Bukkit.getOnlinePlayers().iterator()
+
+            while (var3.hasNext()) {
+                val p = var3.next() as Player
+                this.gamemodeChanged(p, p.gameMode)
+            }
+
+        } else {
+            this.logger.severe("Dynmap is not present or a wrong version is installed!")
+            this.isEnabled = false
+        }
+    }
+
+    fun gamemodeChanged(p: Player, gameMode: GameMode) {
+        if (gameMode == GameMode.SPECTATOR) {
+            this.dynmap.setPlayerVisiblity(p, false)
+        } else {
+            this.dynmap.setPlayerVisiblity(p, true)
+        }
     }
 
     override fun onDisable() {
@@ -162,7 +191,22 @@ class OthercraftPlugin : JavaPlugin() {
             .onErrorMap { it.printStackTrace();it }
             .subscribe()
     }
+}
 
+
+class MyDynmap(val main: OthercraftPlugin) : Listener {
+
+
+
+    @EventHandler
+    fun onPlayerGameModeChangeEvent(e: PlayerGameModeChangeEvent) {
+        this.main.gamemodeChanged(e.player, e.newGameMode)
+    }
+
+    @EventHandler
+    fun onPlayerJoinEvent(e: PlayerJoinEvent) {
+        this.main.gamemodeChanged(e.player, e.player.gameMode)
+    }
 }
 
 private fun World.weather(): String {
