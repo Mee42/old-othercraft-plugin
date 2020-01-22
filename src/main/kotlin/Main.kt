@@ -38,12 +38,14 @@ enum class Joke(
 
 }
 
-class OthercraftPlugin : JavaPlugin() {
 
+lateinit var yes : OthercraftPlugin
+class OthercraftPlugin : JavaPlugin() {
     lateinit var discord: Discord
     lateinit var dynmap: DynmapAPI
 
     override fun onEnable() {
+        yes = this
         println("## onEnable")
         discord = Discord()
         getCommand("oc-status")?.setExecutor(StatusCommand()) ?: logger.severe("Error adding commands")
@@ -71,7 +73,7 @@ class OthercraftPlugin : JavaPlugin() {
             .subscribe()
 
         updateBoard()
-
+        marvok()
 
         val dynmap = Bukkit.getPluginManager().getPlugin("dynmap")
         if (dynmap != null && dynmap is DynmapAPI) {

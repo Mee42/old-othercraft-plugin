@@ -30,6 +30,14 @@ dependencies {
     compile group: 'io.netty', name: 'netty-all', version: '4.1.37.Final'
 
     compile files("Dynmap-3.0-beta-9-spigot.jar")
+
+
+    implementation "org.jdbi:jdbi3-core:3.11.1"
+    implementation "org.jdbi:jdbi3-sqlobject:3.11.1"
+    implementation "org.jdbi:jdbi3-kotlin:3.11.1"
+    implementation "org.jdbi:jdbi3-kotlin-sqlobject:3.11.1"
+    implementation "org.xerial:sqlite-jdbc:3.28.0"
+
 }
 
 compileKotlin {
